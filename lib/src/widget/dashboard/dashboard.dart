@@ -271,8 +271,13 @@ class _DashboardState extends State<Dashboard> {
               ),
             ),
             const SizedBox(height: 20),
-            exportComplete(),
-            dropDown(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                dropDown(),
+                exportComplete(),
+              ]
+            ),
           ],
         ),
       ),
@@ -577,7 +582,7 @@ class _DashboardState extends State<Dashboard> {
     return DropdownButton<String>(
       hint: const Text('Select status'),
       value: 'Complete',
-      items: <String>['Complete', 'Waiting', 'Ongoing', 'Cancel'].map((String value) {
+      items: <String>['Complete', 'Ongoing'].map((String value) {
         return DropdownMenuItem<String>(
           value: value,
           child: Text(value),
@@ -586,15 +591,16 @@ class _DashboardState extends State<Dashboard> {
       onChanged: (value) {
         if(value == 'Complete') {
           ordersExport = orders0;
-        } else if(value == 'Waiting') {
-          ordersExport = ordersWaiting;
-        } else if(value == 'Ongoing') {
+          value = 'Complete';
+        }
+        else if(value == 'Ongoing') {
           ordersExport = ordersOngoing;
-        } else {
-          ordersExport = ordersCancel;
+          value = 'Ongoing';
         }
         setState(() {
-          valueExport = value!;});
+          valueExport = value!;
+          value = valueExport;
+        });
       },
     );
   }

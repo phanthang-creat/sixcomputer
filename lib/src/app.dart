@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:sixcomputer/src/app_settings/app_settings.dart';
+import 'package:sixcomputer/src/widget/coupon/coupon_add_view.dart';
+import 'package:sixcomputer/src/widget/coupon/coupon_edit_view.dart';
 import 'package:sixcomputer/src/widget/dashboard/dashboard.dart';
 import 'package:sixcomputer/src/widget/product/product_add_view.dart';
 import 'package:sixcomputer/src/widget/product/product_detail_view.dart';
@@ -113,7 +115,7 @@ class _MyAppState extends State<MyApp> {
               case ProductCategoryAddView.routeName:
                 return _buildRoute(
                   routeSettings,
-                  ProductCategoryAddView(),
+                  const ProductCategoryAddView(),
                 );
               case ProductEditView.routeName:
                 final args = routeSettings.arguments as Map<String, dynamic>;
@@ -136,6 +138,18 @@ class _MyAppState extends State<MyApp> {
                 return _buildRoute(
                   routeSettings,
                   const Dashboard(),
+                );
+                case CouponAddView.routeName:
+                  final args = routeSettings.arguments as Map<String, dynamic>;
+                  return _buildRoute(
+                  routeSettings,
+                  const CouponAddView(),
+                );
+              case CouponEditView.routeName:
+                final args = routeSettings.arguments as Map<String, dynamic>;
+                return _buildRoute(
+                  routeSettings,
+                  CouponEditView(id: args['id'] as String),
                 );
               default:
                 return _buildRoute(

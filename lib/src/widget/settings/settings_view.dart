@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sixcomputer/src/app_settings/app_settings.dart';
+import 'package:sixcomputer/src/widget/coupon/coupon_list_view.dart';
 import 'package:sixcomputer/src/widget/sign_in/sign_in_view.dart';
 
 import 'settings_controller.dart';
@@ -47,13 +48,13 @@ class SettingsView extends StatelessWidget {
             const SizedBox(height: 16),
             InkWell(
               onTap: () {
-                controller.updateThemeMode(ThemeMode.system);
+                Navigator.pushNamed(context, CouponListView.routeName);
               },
               child: const Row(
                 children: [
-                  Icon(Icons.group),
+                  Icon(Icons.discount),
                   SizedBox(width: 8),
-                  Text('Users'),
+                  Text('Coupons'),
                 ],
               ),
             ),
