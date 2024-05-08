@@ -4,6 +4,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:sixcomputer/src/app_settings/app_settings.dart';
 import 'package:sixcomputer/src/widget/dashboard/dashboard.dart';
+import 'package:sixcomputer/src/widget/dashboard/pdf_export.dart';
 import 'package:sixcomputer/src/widget/product/product_add_view.dart';
 import 'package:sixcomputer/src/widget/product/product_detail_view.dart';
 import 'package:sixcomputer/src/widget/product/product_edit_view.dart';
@@ -137,6 +138,11 @@ class _MyAppState extends State<MyApp> {
                   routeSettings,
                   const Dashboard(),
                 );
+                case ExportPdf.routeName:
+                  return _buildRoute(
+                    routeSettings,
+                    const ExportPdf(),
+                  );
               default:
                 return _buildRoute(
                   routeSettings,

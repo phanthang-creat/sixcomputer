@@ -1,11 +1,13 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
+import 'package:pdf/pdf.dart';
 import 'package:sixcomputer/src/model/ordder_item_model.dart';
 import 'package:sixcomputer/src/model/order_model.dart';
 import 'package:sixcomputer/src/repo/order_item_repo.dart';
 import 'package:sixcomputer/src/repo/order_repo.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:printing/printing.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({super.key});
@@ -20,15 +22,24 @@ class _DashboardState extends State<Dashboard> {
   final Color leftBarColor = Colors.blue;
   final Color rightBarColor = Colors.red;
   final Color middleBarColor = Colors.green;
-
+  int totalComplete = 0;
+  int totalWaiting = 0;
+  int totalOngoing = 0;
+  int totalCancel = 0;
   final double width = 7;
 
   List<BarChartGroupData>? rawBarGroups;
   List<BarChartGroupData>? showingBarGroups;
-
+  String valueExport = '';
   //Order
   List<OrderModel> _orders = [];
 
+  List<OrderModel> ordersExport = [];
+
+  List<OrderModel> orders0 = [];
+  List<OrderModel> ordersWaiting = [];
+  List<OrderModel> ordersOngoing = [];
+  List<OrderModel> ordersCancel = [];
   int touchedGroupIndex = -1;
 
   int revenue = 0;
@@ -48,11 +59,25 @@ class _DashboardState extends State<Dashboard> {
 
     List<OrderItemModel> orderItems = await OrderItemClient().getAllOrderItems();
 
-    List<OrderModel> orders0 = orders.where((element) => element.status == 'Complete' ).toList();
-
+    orders0 = orders.where((element) => element.status == 'Complete' ).toList();
+    ordersWaiting = orders.where((element) => element.status == 'Waiting' ).toList();
+    ordersOngoing = orders.where((element) => element.status == 'Ongoing' ).toList();
+    ordersCancel = orders.where((element) => element.status == 'Cancel' ).toList();
     for (var order in orders0) {
       order.orderItems = orderItems.where((element) => element.orderId == order.id).toList();
       revenue += order.total ?? 0;
+    }
+    for (var order in ordersWaiting) {
+      order.orderItems = orderItems.where((element) => element.orderId == order.id).toList();
+      totalWaiting += order.total ?? 0;
+    }
+    for (var order in ordersOngoing) {
+      order.orderItems = orderItems.where((element) => element.orderId == order.id).toList();
+      totalOngoing += order.total ?? 0;
+    }
+    for (var order in ordersCancel) {
+      order.orderItems = orderItems.where((element) => element.orderId == order.id).toList();
+      totalCancel += order.total ?? 0;
     }
 
     orderCount = orders.where((element) => element.status == 'Waiting').length;
@@ -243,7 +268,10 @@ class _DashboardState extends State<Dashboard> {
                     gridData: const FlGridData(show: false),
                   ),
               ),
-            )
+            ),
+            const SizedBox(height: 20),
+            exportComplete(),
+            dropDown(),
           ],
         ),
       ),
@@ -308,6 +336,252 @@ class _DashboardState extends State<Dashboard> {
       axisSide: meta.axisSide,
       space: 16, //margin top
       child: text,
+    );
+  }
+
+  Widget exportComplete() {
+
+    return IconButton(
+      icon: const Icon(Icons.done_all),
+      onPressed: () {
+        final pdf = pw.Document();
+        pdf.addPage(
+          pw.Page(
+            build: (pw.Context context) {
+              //return invoice();
+              return pw.Column(
+                children: [
+                  pw.Container(
+                    decoration: pw.BoxDecoration(
+                      border: pw.Border.all(color: PdfColors.black, width: 2),
+                    ),
+                    child: pw.Column(
+                      mainAxisAlignment: pw.MainAxisAlignment.start,
+                      crossAxisAlignment: pw.CrossAxisAlignment.start,
+                      children: [
+                        pw.SizedBox(height: 30),
+                        pw.Container(
+                          // decoration: pw.BoxDecoration(
+                          //   border: pw.Border.all(color: PdfColors.black, width: 2),
+                          // ),
+                          child: pw.Row(
+                            mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
+                            children: [
+                              pw.Text(
+                                'Six Computer',
+                                style: const pw.TextStyle(
+                                  fontSize: 24,
+                                ),
+                              ),
+                              pw.Text(
+                                  'Invoice',
+                                  style: pw.TextStyle(
+                                    fontSize: 26,
+                                    fontWeight: pw.FontWeight.bold,
+                                  ),
+                              ),
+                            ]
+                          )
+                        ),
+                        pw.SizedBox(height: 30),
+                        pw.Container(
+                          decoration: pw.BoxDecoration(
+                            border: pw.Border.all(color: PdfColors.black, width: 2),
+                          ),
+                          child: pw.Column(
+                            children: [
+                              pw.SizedBox(height: 30),
+                              pw.Row(
+                                  mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
+                                  children: [
+                                    pw.Text(
+                                      valueExport,
+                                      style: const pw.TextStyle(
+                                        fontSize: 18,
+                                      ),
+                                    ),
+                                    pw.Text(
+                                      'Date: ${DateFormat('yyyy-MM-dd').format(DateTime.now())}',
+                                      style: const pw.TextStyle(
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ]
+                              ),
+                              pw.SizedBox(height: 30),
+                            ]
+                          )
+                        ),
+                      ],
+                    )
+                  ),
+                  pw.Container(
+                    decoration: pw.BoxDecoration(
+                      border: pw.Border.all(color: PdfColors.black, width: 2),
+                    ),
+                    child: pw.Column(
+                      children: [
+                        pw.SizedBox(height: 30),
+                        pw.Row(
+                          mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
+                          children: [
+                            pw.Text(
+                              'Order ID',
+                              style: const pw.TextStyle(
+                                fontSize: 18,
+                              ),
+                            ),
+                            pw.Text(
+                              'Fullname',
+                              style: const pw.TextStyle(
+                                fontSize: 18,
+                              ),
+                            ),
+                            pw.Text(
+                              'Total',
+                              style: const pw.TextStyle(
+                                fontSize: 18,
+                              ),
+                            ),
+                            pw.Text(
+                              'Payment Method',
+                              style: const pw.TextStyle(
+                                fontSize: 18,
+                              ),
+                            ),
+                          ]
+                        ),
+                        pw.SizedBox(height: 30),
+                      ]
+                    )
+                  ),
+                  pw.Container(
+                    decoration: pw.BoxDecoration(
+                      border: pw.Border.all(color: PdfColors.black, width: 2),
+                    ),
+                    child: pw.Column(
+                      children: [
+                        pw.SizedBox(height: 30),
+                        for (var order in ordersExport)
+                          pw.Column(
+                            children: [
+                            pw.Row(
+                                mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
+                                children: [
+                                  pw.Text(
+                                    order.id.toString(),
+                                    style: const pw.TextStyle(
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                  pw.Text(
+                                    order.fullname ?? '',
+                                    style: const pw.TextStyle(
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                  pw.Text(
+                                    NumberFormat.currency(locale: 'vi').format(order.total),
+                                    style: const pw.TextStyle(
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                  pw.Text(
+                                    order.paymentMethod ?? '',
+                                    style: const pw.TextStyle(
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ]
+                            ),
+                            pw.SizedBox(height: 30),
+                            ]
+                          ),
+                        pw.SizedBox(height: 30),
+                      ]
+                    )
+                  ),
+                  pw.Container(
+                    decoration: pw.BoxDecoration(
+                      border: pw.Border.all(color: PdfColors.black, width: 2),
+                    ),
+                    child: pw.Column(
+                      children: [
+                        pw.SizedBox(height: 30),
+                        pw.Row(
+                          mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
+                          children: [
+                            pw.Text(
+                              'Total Revenue',
+                              style: const pw.TextStyle(
+                                fontSize: 18,
+                              ),
+                            ),
+                            if(valueExport == 'Complete') pw.Text(
+                              NumberFormat.currency(locale: 'vi').format(revenue),
+                              style: const pw.TextStyle(
+                                fontSize: 18,
+                              ),
+                            ),
+                            if(valueExport == 'Waiting') pw.Text(
+                              NumberFormat.currency(locale: 'vi').format(totalWaiting),
+                              style: const pw.TextStyle(
+                                fontSize: 18,
+                              ),
+                            ),
+                            if(valueExport == 'Ongoing') pw.Text(
+                              NumberFormat.currency(locale: 'vi').format(totalOngoing),
+                              style: const pw.TextStyle(
+                                fontSize: 18,
+                              ),
+                            ),
+                            if(valueExport == 'Cancel') pw.Text(
+                              NumberFormat.currency(locale: 'vi').format(totalCancel),
+                              style: const pw.TextStyle(
+                                fontSize: 18,
+                              ),
+                            ),
+                          ]
+                        ),
+                        pw.SizedBox(height: 30),
+                      ]
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+        );
+        Printing.layoutPdf(onLayout: (format) {
+          return pdf.save();
+        });
+      },
+    );
+  }
+
+  Widget dropDown() {
+    return DropdownButton<String>(
+      hint: const Text('Select status'),
+      value: 'Complete',
+      items: <String>['Complete', 'Waiting', 'Ongoing', 'Cancel'].map((String value) {
+        return DropdownMenuItem<String>(
+          value: value,
+          child: Text(value),
+        );
+      }).toList(),
+      onChanged: (value) {
+        if(value == 'Complete') {
+          ordersExport = orders0;
+        } else if(value == 'Waiting') {
+          ordersExport = ordersWaiting;
+        } else if(value == 'Ongoing') {
+          ordersExport = ordersOngoing;
+        } else {
+          ordersExport = ordersCancel;
+        }
+        setState(() {
+          valueExport = value!;        });
+      },
     );
   }
 }
