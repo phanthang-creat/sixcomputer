@@ -1,5 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
 import 'package:sixcomputer/src/model/ordder_item_model.dart';
@@ -342,9 +343,14 @@ class _DashboardState extends State<Dashboard> {
   Widget exportComplete() {
 
     return IconButton(
-      icon: const Icon(Icons.done_all),
-      onPressed: () {
-        final pdf = pw.Document();
+      icon: const Icon(Icons.print),
+      onPressed: () async {
+        var myTheme = pw.ThemeData.withFont(
+          base: pw.Font.ttf(await rootBundle.load('assets/fonts/OpenSans-VariableFont_wdth,wght.ttf')),
+        );
+        final pdf = pw.Document(
+          theme: myTheme,
+        );
         pdf.addPage(
           pw.Page(
             build: (pw.Context context) {
@@ -425,28 +431,40 @@ class _DashboardState extends State<Dashboard> {
                         pw.Row(
                           mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
                           children: [
-                            pw.Text(
-                              'Order ID',
-                              style: const pw.TextStyle(
-                                fontSize: 18,
+                            pw.Container(
+                              width: 40,
+                              child:pw.Text(
+                                'ID',
+                                style: const pw.TextStyle(
+                                  fontSize: 18,
+                                ),
                               ),
                             ),
-                            pw.Text(
-                              'Fullname',
-                              style: const pw.TextStyle(
-                                fontSize: 18,
+                            pw.Container(
+                              width: 100,
+                              child:pw.Text(
+                                'Fullname',
+                                style: const pw.TextStyle(
+                                  fontSize: 18,
+                                ),
                               ),
                             ),
-                            pw.Text(
-                              'Total',
-                              style: const pw.TextStyle(
-                                fontSize: 18,
+                            pw.Container(
+                              width: 100,
+                              child:pw.Text(
+                                'Total',
+                                style: const pw.TextStyle(
+                                  fontSize: 18,
+                                ),
                               ),
                             ),
-                            pw.Text(
-                              'Payment Method',
-                              style: const pw.TextStyle(
-                                fontSize: 18,
+                            pw.Container(
+                              width: 100,
+                              child:pw.Text(
+                                'Payment',
+                                style: const pw.TextStyle(
+                                  fontSize: 18,
+                                ),
                               ),
                             ),
                           ]
@@ -468,28 +486,42 @@ class _DashboardState extends State<Dashboard> {
                             pw.Row(
                                 mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
                                 children: [
-                                  pw.Text(
-                                    order.id.toString(),
-                                    style: const pw.TextStyle(
-                                      fontSize: 12,
+                                  pw.Container(
+                                    width: 40,
+                                    child: pw.Text(
+                                      textAlign: pw.TextAlign.left,
+                                      order.id.toString(),
+                                      style: const pw.TextStyle(
+                                        fontSize: 12,
+                                      ),
                                     ),
                                   ),
-                                  pw.Text(
-                                    order.fullname ?? '',
-                                    style: const pw.TextStyle(
+                                  pw.Container(
+                                    width: 100,
+                                    child:pw.Text(
+                                      textAlign: pw.TextAlign.left,
+                                      order.fullname ?? '',
+                                      style: const pw.TextStyle(
                                       fontSize: 12,
+                                      ),
+                                      ),
+                                  ),
+                                  pw.Container(
+                                    width: 100,
+                                    child: pw.Text(
+                                      NumberFormat.currency(locale: 'vi').format(order.total),
+                                      style: const pw.TextStyle(
+                                        fontSize: 12,
+                                      ),
                                     ),
                                   ),
-                                  pw.Text(
-                                    NumberFormat.currency(locale: 'vi').format(order.total),
-                                    style: const pw.TextStyle(
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                                  pw.Text(
-                                    order.paymentMethod ?? '',
-                                    style: const pw.TextStyle(
-                                      fontSize: 12,
+                                  pw.Container(
+                                    width: 100,
+                                    child:pw.Text(
+                                      order.paymentMethod ?? '',
+                                      style: const pw.TextStyle(
+                                        fontSize: 12,
+                                      ),
                                     ),
                                   ),
                                 ]
@@ -497,10 +529,10 @@ class _DashboardState extends State<Dashboard> {
                             pw.SizedBox(height: 30),
                             ]
                           ),
-                        pw.SizedBox(height: 30),
                       ]
                     )
                   ),
+                  if(valueExport == 'Complete')
                   pw.Container(
                     decoration: pw.BoxDecoration(
                       border: pw.Border.all(color: PdfColors.black, width: 2),
@@ -517,26 +549,8 @@ class _DashboardState extends State<Dashboard> {
                                 fontSize: 18,
                               ),
                             ),
-                            if(valueExport == 'Complete') pw.Text(
+                            pw.Text(
                               NumberFormat.currency(locale: 'vi').format(revenue),
-                              style: const pw.TextStyle(
-                                fontSize: 18,
-                              ),
-                            ),
-                            if(valueExport == 'Waiting') pw.Text(
-                              NumberFormat.currency(locale: 'vi').format(totalWaiting),
-                              style: const pw.TextStyle(
-                                fontSize: 18,
-                              ),
-                            ),
-                            if(valueExport == 'Ongoing') pw.Text(
-                              NumberFormat.currency(locale: 'vi').format(totalOngoing),
-                              style: const pw.TextStyle(
-                                fontSize: 18,
-                              ),
-                            ),
-                            if(valueExport == 'Cancel') pw.Text(
-                              NumberFormat.currency(locale: 'vi').format(totalCancel),
                               style: const pw.TextStyle(
                                 fontSize: 18,
                               ),
@@ -580,7 +594,7 @@ class _DashboardState extends State<Dashboard> {
           ordersExport = ordersCancel;
         }
         setState(() {
-          valueExport = value!;        });
+          valueExport = value!;});
       },
     );
   }
