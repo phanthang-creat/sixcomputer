@@ -48,7 +48,7 @@ class SettingsView extends StatelessWidget {
             const SizedBox(height: 16),
             InkWell(
               onTap: () {
-                Navigator.pushNamed(context, CouponListView.routeName);
+                pageController.jumpToPage(5);
               },
               child: const Row(
                 children: [

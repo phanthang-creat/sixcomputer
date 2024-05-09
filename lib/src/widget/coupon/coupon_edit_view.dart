@@ -84,7 +84,7 @@ class _CouponEditViewState extends State<CouponEditView> {
               TextFormField(
                 controller: nameController,
                 validator: (value) =>
-                  value!.isEmpty ? 'Please enter coupon name' : null,
+                  value == null || value.isEmpty ? 'Please enter coupon name' : null,
                 decoration: const InputDecoration(
                   labelText: 'Coupon Name',
                   hintText: 'Enter coupon name',
@@ -99,8 +99,9 @@ class _CouponEditViewState extends State<CouponEditView> {
               TextFormField(
                 controller: percentController,
                 validator: (value) =>
-                  value!.isEmpty ? 'Please enter percentage' : null,
-                decoration: const InputDecoration(
+                  value == null || value.isEmpty ? 'Please enter percentage' : null,
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  decoration: const InputDecoration(
                   labelText: 'Percentage',
                   hintText: 'Enter percentage',
                   fillColor: Color.fromARGB(255, 126, 126, 126),
@@ -114,7 +115,7 @@ class _CouponEditViewState extends State<CouponEditView> {
               TextFormField(
                 controller: productIdController,
                 validator: (value) =>
-                  value!.isEmpty ? 'Please enter product id' : null,
+                  value == null || value.isEmpty ? 'Please enter product id' : null,
                 decoration: const InputDecoration(
                   labelText: 'Product Id',
                   hintText: 'Enter product id',

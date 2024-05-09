@@ -5,6 +5,7 @@ import 'package:sixcomputer/src/widget/product/product_list_view.dart';
 import 'package:sixcomputer/src/widget/product_category/product_category_list_view.dart';
 import 'package:sixcomputer/src/widget/settings/settings_controller.dart';
 import 'package:sixcomputer/src/widget/settings/settings_view.dart';
+import 'package:sixcomputer/src/widget/coupon/coupon_list_view.dart';
 
 class TabbarController extends StatefulWidget {
   const TabbarController({super.key, required this.settingsController});
@@ -34,7 +35,8 @@ class _TabbarControllerState extends State<TabbarController> {
               controller: widget.settingsController,
               pageController: pageController,
             ),
-            const ProductCategoriesListView()
+            const ProductCategoriesListView(),
+            const CouponListView(),
           ],
         ),
         bottomNavigationBar: BottomNavigationBar(

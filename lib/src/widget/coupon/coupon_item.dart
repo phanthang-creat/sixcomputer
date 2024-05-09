@@ -100,9 +100,14 @@ class _CouponItemState extends State<CouponItem>{
                                           fontSize: 16)),
                                   const SizedBox(height: 5),
                                   Text(NumberFormat.currency(
-                                      locale: 'vi', symbol: '₫')
+                                      locale: 'vi', symbol: '%')
                                       .format(widget.couponModel.precentageNum)),
                                   const SizedBox(height: 5),
+                                  Text('Product discount: ${widget.couponModel.productId}',
+                                      style: const TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16)),
                                 ]),
                           ),
                           //Edit and delete
@@ -112,7 +117,7 @@ class _CouponItemState extends State<CouponItem>{
                             children: [
                               InkWell(
                                   onTap: () {
-                                    Navigator.pushNamed(context, ProductEditView.routeName,
+                                    Navigator.pushNamed(context, CouponEditView.routeName,
                                         arguments: {'id': widget.couponModel.couponId});
                                   },
                                   child: const Icon(
