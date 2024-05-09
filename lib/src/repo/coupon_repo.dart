@@ -35,21 +35,21 @@ class CouponClient {
   }
 
   Future<void> addCoupon(CouponModel coupon) async {
-    await FirebaseDatabase.instance.ref('Product/${coupon.couponId}').set(coupon.toJson());
+    await FirebaseDatabase.instance.ref('Coupon/${coupon.id}').set(coupon.toJson());
   }
 
   Future<void> deleteCoupon(String key) async {
-    await ref.child(key).remove();
+    await FirebaseDatabase.instance.ref('Coupon/$key').remove();
   }
 
   Future<void> updateCoupon(CouponModel coupon) async {
-    await FirebaseDatabase.instance.ref('Product/${coupon.couponId}').update(coupon.toJson());
+    await FirebaseDatabase.instance.ref('Coupon/${coupon.id}').update(coupon.toJson());
   }
 
   Future<CouponModel> getCouponById(String id) async {
 
-    final product = await FirebaseDatabase.instance.ref().child('Coupon').child(id).once();
+    final coupon = await FirebaseDatabase.instance.ref().child('Coupon').child(id).once();
 
-    return CouponModel.fromJson(product.snapshot.value as Map<dynamic, dynamic>);
+    return CouponModel.fromJson(coupon.snapshot.value as Map<dynamic, dynamic>);
   }
 }

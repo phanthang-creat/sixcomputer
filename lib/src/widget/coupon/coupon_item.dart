@@ -101,9 +101,9 @@ class _CouponItemState extends State<CouponItem>{
                                   const SizedBox(height: 5),
                                   Text(NumberFormat.currency(
                                       locale: 'vi', symbol: '%')
-                                      .format(widget.couponModel.precentageNum)),
+                                      .format(widget.couponModel.percentageNum)),
                                   const SizedBox(height: 5),
-                                  Text('Product discount: ${widget.couponModel.productId}',
+                                  Text('Product discount: ${widget.couponModel.productId!}',
                                       style: const TextStyle(
                                           color: Colors.black,
                                           fontWeight: FontWeight.bold,
@@ -118,7 +118,7 @@ class _CouponItemState extends State<CouponItem>{
                               InkWell(
                                   onTap: () {
                                     Navigator.pushNamed(context, CouponEditView.routeName,
-                                        arguments: {'id': widget.couponModel.couponId});
+                                        arguments: {'id': widget.couponModel.couponId!});
                                   },
                                   child: const Icon(
                                     Icons.edit_outlined,

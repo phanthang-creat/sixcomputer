@@ -24,16 +24,17 @@ class CouponAddView extends StatefulWidget {
 
 class _CouponAddViewState extends State<CouponAddView>{
   final _formKey = GlobalKey<FormState>();
-
+  TextEditingController couponIdController = TextEditingController();
   TextEditingController nameController = TextEditingController();
   TextEditingController percentController = TextEditingController();
   TextEditingController productIdController = TextEditingController();
 
   addCoupon() async {
     final coupon = CouponModel(
-      couponId: const Uuid().v4(),
+      id: const Uuid().v4(),
+      couponId: couponIdController.text,
       couponName: nameController.text,
-      precentageNum: int.parse(percentController.text),
+      percentageNum: int.parse(percentController.text),
       productId: productIdController.text,
     );
 
@@ -62,6 +63,23 @@ class _CouponAddViewState extends State<CouponAddView>{
             const SizedBox(height: 16),
             TextFormField(
               autofocus: true,
+              controller: couponIdController,
+              validator: (value) => value == null || value.isEmpty
+                ? 'Please enter coupon id'
+                : null,
+              decoration: InputDecoration(
+                labelText: 'Coupon Id',
+                hintText: 'Enter coupon id',
+                fillColor: const Color.fromARGB(255, 126, 126, 126),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: const BorderSide(color: Colors.grey),
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            TextFormField(
+              autofocus: true,
               controller: nameController,
               validator: (value) => value == null || value.isEmpty
                 ? 'Please enter coupon name'
@@ -84,8 +102,8 @@ class _CouponAddViewState extends State<CouponAddView>{
                 ? 'Please enter precentage number'
                 : null,
               decoration: InputDecoration(
-                labelText: 'Precentage Number',
-                hintText: 'Enter precentage number',
+                labelText: 'Percentage Number',
+                hintText: 'Enter percentage number',
                 fillColor: const Color.fromARGB(255, 126, 126, 126),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),

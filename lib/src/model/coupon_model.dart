@@ -1,34 +1,37 @@
 class CouponModel {
   String? couponId;
   String? couponName;
-  int? precentageNum;
+  int? percentageNum;
   String? productId;
-
+  String? id;
   CouponModel({
     this.couponId,
     this.couponName,
-    this.precentageNum,
+    this.percentageNum,
     this.productId,
+    this.id,
   });
 
   CouponModel.fromJson(Map<dynamic, dynamic> json) {
     couponId = json['couponId'] ?? '';
     couponName = json['couponName'] ?? '';
-    precentageNum = json['precentageNum'] ?? 0;
+    percentageNum = json['percentageNum'] ?? 0;
     productId = json['productId'] ?? '';
+    id = json['id'] ?? '';
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['couponId'] = couponId;
     data['couponName'] = couponName;
-    data['precentageNum'] = precentageNum ?? 0;
+    data['percentageNum'] = percentageNum;
     data['productId'] = productId;
+    data['id'] = id;
     return data;
   }
 
   @override
   String toString() {
-    return 'CouponModel{couponId: $couponId, couponName: $couponName, precentageNum: $precentageNum, productId: $productId}';
+    return 'CouponModel{couponId: $couponId, couponName: $couponName, percentageNum: $percentageNum, productId: $productId}';
   }
 }

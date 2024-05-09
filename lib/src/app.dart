@@ -140,7 +140,6 @@ class _MyAppState extends State<MyApp> {
                   const Dashboard(),
                 );
                 case CouponAddView.routeName:
-                  final args = routeSettings.arguments as Map<String, dynamic>;
                   return _buildRoute(
                   routeSettings,
                   const CouponAddView(),
