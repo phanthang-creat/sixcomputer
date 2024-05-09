@@ -24,14 +24,14 @@ class CouponAddView extends StatefulWidget {
 
 class _CouponAddViewState extends State<CouponAddView>{
   final _formKey = GlobalKey<FormState>();
-
+  TextEditingController couponIdController = TextEditingController();
   TextEditingController nameController = TextEditingController();
   TextEditingController percentController = TextEditingController();
   TextEditingController productIdController = TextEditingController();
 
   addCoupon() async {
     final coupon = CouponModel(
-      couponId: const Uuid().v4(),
+      couponId: couponIdController.text,
       couponName: nameController.text,
       percentageNum: int.parse(percentController.text),
       productId: productIdController.text,
@@ -59,6 +59,23 @@ class _CouponAddViewState extends State<CouponAddView>{
         padding: const EdgeInsets.all(16),
         child: ListView(
           children: [
+            const SizedBox(height: 16),
+            TextFormField(
+              autofocus: true,
+              controller: couponIdController,
+              validator: (value) => value == null || value.isEmpty
+                ? 'Please enter coupon id'
+                : null,
+              decoration: InputDecoration(
+                labelText: 'Coupon Id',
+                hintText: 'Enter coupon id',
+                fillColor: const Color.fromARGB(255, 126, 126, 126),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: const BorderSide(color: Colors.grey),
+                ),
+              ),
+            ),
             const SizedBox(height: 16),
             TextFormField(
               autofocus: true,

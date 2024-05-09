@@ -4,6 +4,7 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sixcomputer/src/help/show_message.dart';
@@ -41,6 +42,7 @@ class _CouponEditViewState extends State<CouponEditView> {
   fetchCouponById() async {
     final coupon = await couponClient.getCouponById(widget.id);
 
+    // couponIdController.text = coupon.couponId ?? '';
     nameController.text = coupon.couponName ?? '';
     percentController.text = coupon.percentageNum.toString() ?? '';
     productIdController.text = coupon.productId ?? '';
@@ -72,6 +74,8 @@ class _CouponEditViewState extends State<CouponEditView> {
   updateCoupon() async {
     final coupon = this.coupon;
 
+    // coupon.couponId = couponIdController.text;
+
     coupon.couponName = nameController.text;
 
     coupon.percentageNum = int.parse(percentController.text);
@@ -97,6 +101,21 @@ class _CouponEditViewState extends State<CouponEditView> {
           key: _formKey,
           child: ListView(
             children: [
+              // const SizedBox(height: 16),
+              // TextFormField(
+              //   controller: couponIdController,
+              //   validator: (value) =>
+              //     value == null || value.isEmpty ? 'Please enter coupon id' : null,
+              //   decoration: const InputDecoration(
+              //     labelText: 'Coupon Id',
+              //     hintText: 'Enter coupon id',
+              //     fillColor: Color.fromARGB(255, 126, 126, 126),
+              //     border: OutlineInputBorder(
+              //       borderRadius: BorderRadius.all(Radius.circular(10)),
+              //       borderSide: BorderSide(color: Colors.grey),
+              //     ),
+              //     )
+              // ),
               const SizedBox(
                 height: 16,
               ),
