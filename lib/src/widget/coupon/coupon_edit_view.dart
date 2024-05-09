@@ -8,7 +8,9 @@ import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sixcomputer/src/help/show_message.dart';
 import 'package:sixcomputer/src/model/coupon_model.dart';
+import 'package:sixcomputer/src/model/product_model.dart';
 import 'package:sixcomputer/src/repo/coupon_repo.dart';
+import 'package:sixcomputer/src/repo/product_repo.dart';
 import 'package:sixcomputer/src/repo/upload_file.dart';
 
 class CouponEditView extends StatefulWidget {
@@ -25,19 +27,22 @@ class _CouponEditViewState extends State<CouponEditView> {
   final _formKey = GlobalKey<FormState>();
 
   final CouponClient couponClient = CouponClient();
+  final ProductClient productClient = ProductClient();
   late CouponModel coupon;
+  List<ProductModel> products = [];
 
   @override
   void initState() {
     super.initState();
 
+    fetchProducts();
     fetchData();
   }
   fetchCouponById() async {
     final coupon = await couponClient.getCouponById(widget.id);
 
     nameController.text = coupon.couponName ?? '';
-    percentController.text = coupon.precentageNum.toString() ?? '';
+    percentController.text = coupon.percentageNum.toString() ?? '';
     productIdController.text = coupon.productId ?? '';
 
     this.coupon = coupon;
@@ -45,17 +50,31 @@ class _CouponEditViewState extends State<CouponEditView> {
     setState(() {});
   }
 
-  void fetchData() {}
+  fetchProducts() async {
+    final products = await productClient.fetchProducts2();
+
+    this.products.clear();
+    this.products.addAll(products);
+    setState(() {});
+  }
+
+  void fetchData() {
+    fetchCouponById();
+  }
+
+  
   TextEditingController nameController = TextEditingController();
   TextEditingController percentController = TextEditingController();
   TextEditingController productIdController = TextEditingController();
+
+  
 
   updateCoupon() async {
     final coupon = this.coupon;
 
     coupon.couponName = nameController.text;
 
-    coupon.precentageNum = int.parse(percentController.text);
+    coupon.percentageNum = int.parse(percentController.text);
 
     coupon.productId = productIdController.text;
 
@@ -112,20 +131,28 @@ class _CouponEditViewState extends State<CouponEditView> {
                   )
                 ),
               const SizedBox(height: 16),
-              TextFormField(
-                controller: productIdController,
-                validator: (value) =>
-                  value == null || value.isEmpty ? 'Please enter product id' : null,
+              DropdownButtonFormField(
+                isExpanded: true,
+                value: productIdController.text,
+                onChanged: (String? value) {
+                  productIdController.text = value!;
+                },
+                items: products.map((ProductModel product) {
+                  return DropdownMenuItem(
+                    value: product.id,
+                    child: Text(product.productName ?? '', overflow: TextOverflow.ellipsis),
+                  );
+                }).toList(),
                 decoration: const InputDecoration(
-                  labelText: 'Product Id',
-                  hintText: 'Enter product id',
+                  labelText: 'Product',
+                  hintText: 'Select product',
                   fillColor: Color.fromARGB(255, 126, 126, 126),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(10)),
                     borderSide: BorderSide(color: Colors.grey),
                   ),
-                  )
                 ),
+              ),
               const SizedBox(height: 16),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,

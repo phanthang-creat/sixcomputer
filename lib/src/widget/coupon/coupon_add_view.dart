@@ -33,7 +33,7 @@ class _CouponAddViewState extends State<CouponAddView>{
     final coupon = CouponModel(
       couponId: const Uuid().v4(),
       couponName: nameController.text,
-      precentageNum: int.parse(percentController.text),
+      percentageNum: int.parse(percentController.text),
       productId: productIdController.text,
     );
 
@@ -81,11 +81,11 @@ class _CouponAddViewState extends State<CouponAddView>{
               controller: percentController,
               keyboardType: TextInputType.number,
               validator: (value) => value == null || value.isEmpty
-                ? 'Please enter precentage number'
+                ? 'Please enter percentage number'
                 : null,
               decoration: InputDecoration(
-                labelText: 'Precentage Number',
-                hintText: 'Enter precentage number',
+                labelText: 'percentage Number',
+                hintText: 'Enter percentage number',
                 fillColor: const Color.fromARGB(255, 126, 126, 126),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),

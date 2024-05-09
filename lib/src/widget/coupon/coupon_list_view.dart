@@ -1,7 +1,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:sixcomputer/src/model/coupon_model.dart';
+import 'package:sixcomputer/src/model/product_model.dart';
 import 'package:sixcomputer/src/repo/coupon_repo.dart';
+import 'package:sixcomputer/src/repo/product_repo.dart';
 import 'package:sixcomputer/src/widget/coupon/coupon_add_view.dart';
 import 'package:sixcomputer/src/widget/coupon/coupon_item.dart';
 
@@ -18,24 +20,50 @@ class _CouponListViewState extends State<CouponListView> {
   final List<CouponModel> coupons = [];
 
   final CouponClient couponClient = CouponClient();
+  final ProductClient productClient = ProductClient();
   final TextEditingController searchController = TextEditingController();
 
   bool isSearching = false;
 
   final List<CouponModel> searchCoupons = [];
 
+  final List<ProductModel> products = [];
+
   @override
   void initState() {
     super.initState();
 
     // fetchCoupons();
-    fetchCoupons2();
+    // fetchProducts();
+    fetchData();
   }
   fetchCoupons2() async {
     final coupons = await couponClient.fetchCoupons2();
 
     this.coupons.clear();
     this.coupons.addAll(coupons);
+    setState(() {
+    });
+  }
+
+  fetchProducts() async {
+    final products = await productClient.fetchProducts2();
+
+    this.products.clear();
+    this.products.addAll(products);
+    setState(() {
+    });
+  }
+
+  fetchData() async {
+    await fetchCoupons2();
+    await fetchProducts();
+
+    for (final coupon in coupons) {
+      final product = products.firstWhere((element) => element.id == coupon.productId);
+      coupon.productName = product.productName;
+    }
+
     setState(() {
     });
   }
@@ -82,7 +110,7 @@ class _CouponListViewState extends State<CouponListView> {
       ),
       body: RefreshIndicator(
         onRefresh: () async {
-          fetchCoupons2();
+          await fetchData();
         },
         child: coupons.isEmpty
           ? const Center(

@@ -10,7 +10,7 @@ class CouponClient {
     if (productRaw.snapshot.value != null) {
       final Map<dynamic, dynamic> data = Map<dynamic, dynamic>.from(productRaw.snapshot.value as Map<dynamic, dynamic>);
       data.forEach((key, value) {
-        coupons.add(CouponModel.fromJson(value as Map<dynamic, dynamic>));
+        coupons.add(CouponModel.fromJson(value as Map<dynamic, dynamic>, key as String));
       });
     }
     return coupons;
@@ -27,7 +27,7 @@ class CouponClient {
       final Map<dynamic, dynamic> data = Map<dynamic, dynamic>.from(couponsChild.snapshot.value as Map<dynamic, dynamic>);
 
       data.forEach((key, value) {
-        coupons.add(CouponModel.fromJson(value as Map<dynamic, dynamic>));
+        coupons.add(CouponModel.fromJson(value as Map<dynamic, dynamic>, key as String));
       });
     }
 
@@ -35,7 +35,7 @@ class CouponClient {
   }
 
   Future<void> addCoupon(CouponModel coupon) async {
-    await FirebaseDatabase.instance.ref('Product/${coupon.couponId}').set(coupon.toJson());
+    await FirebaseDatabase.instance.ref('Coupon/${coupon.couponId}').set(coupon.toJson());
   }
 
   Future<void> deleteCoupon(String key) async {
@@ -43,13 +43,13 @@ class CouponClient {
   }
 
   Future<void> updateCoupon(CouponModel coupon) async {
-    await FirebaseDatabase.instance.ref('Product/${coupon.couponId}').update(coupon.toJson());
+    await FirebaseDatabase.instance.ref('Coupon/${coupon.key}').update(coupon.toJson());
   }
 
   Future<CouponModel> getCouponById(String id) async {
 
     final product = await FirebaseDatabase.instance.ref().child('Coupon').child(id).once();
 
-    return CouponModel.fromJson(product.snapshot.value as Map<dynamic, dynamic>);
+    return CouponModel.fromJson(product.snapshot.value as Map<dynamic, dynamic>, id);
   }
 }

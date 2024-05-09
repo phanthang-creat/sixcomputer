@@ -18,6 +18,8 @@ class _CouponItemState extends State<CouponItem>{
   @override
   void initState() {
     super.initState();
+
+    print(widget.couponModel);
   }
 
   showAlert() {
@@ -91,7 +93,7 @@ class _CouponItemState extends State<CouponItem>{
                               //mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(widget.couponModel.couponName!,
+                                  Text('Coupon name: ${widget.couponModel.couponName}',
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                       style: const TextStyle(
@@ -99,11 +101,16 @@ class _CouponItemState extends State<CouponItem>{
                                           fontWeight: FontWeight.bold,
                                           fontSize: 16)),
                                   const SizedBox(height: 5),
-                                  Text(NumberFormat.currency(
-                                      locale: 'vi', symbol: '%')
-                                      .format(widget.couponModel.precentageNum)),
+                                  // Text(NumberFormat.currency(
+                                  //     locale: 'vi', symbol: '%')
+                                  //     .format(widget.couponModel.percentageNum)),
+                                  Text('Discount percentage: ${widget.couponModel.percentageNum}%',
+                                      style: const TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16)),
                                   const SizedBox(height: 5),
-                                  Text('Product discount: ${widget.couponModel.productId}',
+                                  Text('Product discount: ${widget.couponModel.productName}',
                                       style: const TextStyle(
                                           color: Colors.black,
                                           fontWeight: FontWeight.bold,
@@ -118,7 +125,7 @@ class _CouponItemState extends State<CouponItem>{
                               InkWell(
                                   onTap: () {
                                     Navigator.pushNamed(context, CouponEditView.routeName,
-                                        arguments: {'id': widget.couponModel.couponId});
+                                        arguments: {'id': widget.couponModel.key});
                                   },
                                   child: const Icon(
                                     Icons.edit_outlined,
